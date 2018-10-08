@@ -14,7 +14,7 @@ var numeroBinario = "";
 var binarioCientificio;
 
 function pasarBinarioEntera(numeroDecimal){  //Convierte la parte entera del numero en binario.
-	console.log("hola");
+	
 	var parteEnteraBinario = "";
 	var parteEntera = parseInt(numeroDecimal); //parseInt devuelve solo la parte entera de un número.
 
