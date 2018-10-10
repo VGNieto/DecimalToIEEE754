@@ -9,26 +9,26 @@ document.getElementById('convertir').addEventListener('click', function (e) {
 var numeroBinario = ''
 var binarioCientificio
 
-function pasarBinarioEntera (numeroDecimal) { // Convierte la parte entera del numero en binario.
+function pasarBinarioEntera(numeroDecimal) { // Convierte la parte entera del numero en binario.
 
   var parteEnteraBinario = ''
-  var parteEntera = parseInt(numeroDecimal); // parseInt devuelve solo la parte entera de un número.
+  var parteEntera = Math.floor(numeroDecimal);
 
-  if (parteEntera == 0) {
+  if (parteEntera === 0) {
     parteEnteraBinario = '0' // Si la parte entera es 0, el binario es 0, si es negativa, se convierte a positiva
   } else if (parteEntera < 0) {
     parteEntera = numeroDecimal * (-1)
   }
 
-  while(parteEntera > 0) { // Mientras la parte entera sea mayor que 0, se divide entre 2 y se recoge el resto, concatenando el resto anterior.
-    parteEnteraBinario = parseInt(parteEntera % 2) + parteEnteraBinario
-    parteEntera = parseInt(parteEntera / 2)
+  while (parteEntera > 0) { // Mientras la parte entera sea mayor que 0, se divide entre 2 y se recoge el resto, concatenando el resto anterior.
+    parteEnteraBinario = Math.floor(parteEntera % 2) + parteEnteraBinario
+    parteEntera = Math.floor(parteEntera / 2)
   }
 
   return parteEnteraBinario; // Devuelve la parte entera en binario.
 }
 
-function pasarBinarioDecimal (numeroDecimal) { // Convierte la parte decimal del numero en binario.
+function pasarBinarioDecimal(numeroDecimal) { // Convierte la parte decimal del numero en binario.
 
   var numeroPositivo = numeroDecimal
 
@@ -38,30 +38,31 @@ function pasarBinarioDecimal (numeroDecimal) { // Convierte la parte decimal del
     numeroPositivo = numeroDecimal
   }
 
+
   // Para conseguir solo la parte decimal, restamos a la parte entera el numero completo y lo multiplicamos por (-1)
-  var parteDecimal = (parseInt(numeroPositivo) - numeroPositivo) * (-1)
+  var parteDecimal = (Math.floor(numeroPositivo) - numeroPositivo) * (-1)
   var parteDecimalBinario = ''
   var resultadoMultiplicacion
   var contadorCantidadNumeros = 0
 
   // Mientras no tengamos 60 numeros binarios de la parte decimal, seguiremos multiplicando y recogiendo solo la parte entera.
-  while(contadorCantidadNumeros <= 60){
+  while (contadorCantidadNumeros <= 60) {
     contadorCantidadNumeros++
     resultadoMultiplicacion = parteDecimal * 2
-    parteDecimalBinario = parteDecimalBinario + parseInt(resultadoMultiplicacion)
-    parteDecimal = (parseInt(resultadoMultiplicacion) - resultadoMultiplicacion) * (-1)
+    parteDecimalBinario = parteDecimalBinario + Math.floor(resultadoMultiplicacion)
+    parteDecimal = (Math.floor(resultadoMultiplicacion) - resultadoMultiplicacion) * (-1)
   }
 
   return parteDecimalBinario; // Devolvemos la parte decimal en binario.
 }
 
-function binarioCompleto (numeroDecimal) {
+function binarioCompleto(numeroDecimal) {
   numeroBinario = pasarBinarioEntera(numeroDecimal) + '.' + pasarBinarioDecimal(numeroDecimal)
 
   return numeroBinario
 }
 
-function pasarBinarioCientifica () { // Pasamos el binario obtenido a notación cientifica.
+function pasarBinarioCientifica() { // Pasamos el binario obtenido a notación cientifica.
 
   var posicionUno = numeroBinario.indexOf('1'); // Guardamos la posicion del primer "1" del binario.
   var posicionPunto = numeroBinario.indexOf('.'); // Guardamos la posicion del primer "." del binario.
@@ -69,7 +70,7 @@ function pasarBinarioCientifica () { // Pasamos el binario obtenido a notación 
 
   /*Si la parte entera del binario es 0, el binario cientifico será la concatenación del primer uno con el resto del binario.
   	El exponente será el numero de veces que hemos movido el punto, es decir, la posición del "1" menos la posición del "." */
-  if (numeroBinario.substring(0, posicionPunto) == '0') {
+  if (numeroBinario.substring(0, posicionPunto) === '0') {
     var inicio = numeroBinario.substring(posicionUno, posicionUno + 1)
     var final = '.' + numeroBinario.substring(posicionUno + 1, numeroBinario.length)
     binarioCientificio = inicio + final
@@ -85,17 +86,21 @@ function pasarBinarioCientifica () { // Pasamos el binario obtenido a notación 
     var definitivo = final.replace('.', '')
     binarioCientificio = inicio + '.' + definitivo
 
-    for (var i = 1; i < posicionPunto;i++) {
+    for (var i = 1; i < posicionPunto; i++) {
       exponenteFinal = exponenteFinal + 1
     }
   }
 
+
+
   return exponenteFinal; // Devolvemos el exponente.
 }
 
-function ieee754aBinario (numeroDecimal) { // Por último teniendo todos los datos necesarios, pasamos el numero al estandar IEEE754
+function ieee754aBinario(numeroDecimal) { // Por último teniendo todos los datos necesarios, pasamos el numero al estandar IEEE754
 
-  binarioCompleto(numeroDecimal); // Llamamos a esta función, que a su vez llama a otras dos para obtener el numero binario completo.
+
+
+  binarioCompleto(parseFloat(numeroDecimal)); // Llamamos a esta función, que a su vez llama a otras dos para obtener el numero binario completo.
   pasarBinarioCientifica(); // Pasamos ese numero a notación cientifica y lo guardamos en una variable declarada al principio.
 
   var numeroIEEE = ''
@@ -111,21 +116,29 @@ function ieee754aBinario (numeroDecimal) { // Por último teniendo todos los dat
     signo = '1'
   }
 
-  while(mantisa.length < 23){ // En caso de que la mantisa no llegue a 23 números, rellenaremos con "0" a la derecha hasta completarla.
+  while (mantisa.length < 23) { // En caso de que la mantisa no llegue a 23 números, rellenaremos con "0" a la derecha hasta completarla.
     mantisa = mantisa + '0'
   }
 
   // En caso de que la parte entera sea 0, para obtener el binario del exponente se le restará a 127 el exponente, en caso contrario se suma.
   var comprobarSiCero = parseInt(numeroDecimal)
 
-  if (comprobarSiCero == 0 || comprobarSiCero == 1) {
+  if (comprobarSiCero === 0 || comprobarSiCero === 1) {
     binarioExponente = '0' + (pasarBinarioEntera(127 - exponente)).toString()
   } else {
     binarioExponente = (pasarBinarioEntera(127 + exponente)).toString()
   }
 
+
   // Por último se concatenan todos los resultados y tendriamos el numero convertido a IEEE754.
   numeroIEEE = signo + binarioExponente + mantisa
 
+  if (numeroDecimal === "0") {
+    numeroIEEE = "00000000000000000000000000000000"
+  } else if (numeroDecimal === "-0") {
+    numeroIEEE = "10000000000000000000000000000000"
+  }
+
   return numeroIEEE
 }
+
