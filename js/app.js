@@ -11,6 +11,8 @@ var binarioCientificio
 
 function pasarBinarioEntera(numeroDecimal) { // Convierte la parte entera del numero en binario.
 
+  
+
   var parteEnteraBinario = ''
   var parteEntera = Math.floor(numeroDecimal);
 
@@ -108,6 +110,7 @@ function pasarBinarioCientifica() { // Pasamos el binario obtenido a notación c
 function ieee754aBinario(numeroDecimal) { // Por último teniendo todos los datos necesarios, pasamos el numero al estandar IEEE754
 
 
+  
 
   binarioCompleto(parseFloat(numeroDecimal)); // Llamamos a esta función, que a su vez llama a otras dos para obtener el numero binario completo.
   pasarBinarioCientifica(); // Pasamos ese numero a notación cientifica y lo guardamos en una variable declarada al principio.
