@@ -25,6 +25,7 @@ function pasarBinarioEntera(numeroDecimal) { // Convierte la parte entera del nu
     parteEntera = Math.floor(parteEntera / 2)
   }
 
+
   return parteEnteraBinario; // Devuelve la parte entera en binario.
 }
 
@@ -45,8 +46,13 @@ function pasarBinarioDecimal(numeroDecimal) { // Convierte la parte decimal del 
   var resultadoMultiplicacion
   var contadorCantidadNumeros = 0
 
-  // Mientras no tengamos 60 numeros binarios de la parte decimal, seguiremos multiplicando y recogiendo solo la parte entera.
-  while (contadorCantidadNumeros <= 60) {
+  /* Mientras no tengamos 150 numeros binarios de la parte decimal, seguiremos multiplicando y recogiendo solo la parte entera.
+    Se cogen 150 números por si acaso nos encontramos con algún exponente altisimo, en cuyo caso hará falta seguir multiplicando hasta
+    conseguir algún valor que nos sirva (normalmente un 1), si pasa de 150 sin encontrar un 1 usaremos el valor por defecto más abajo.
+    Tendriamos que fijar un límite real, pero cuantas más operaciones más lento se procesa el resultado, así que con 150 operaciones 
+    tenemos lo suficiente para representar el numero más pequeño en 32 bits*/
+
+  while (contadorCantidadNumeros <= 150) {
     contadorCantidadNumeros++
     resultadoMultiplicacion = parteDecimal * 2
     parteDecimalBinario = parteDecimalBinario + Math.floor(resultadoMultiplicacion)
@@ -64,7 +70,12 @@ function binarioCompleto(numeroDecimal) {
 
 function pasarBinarioCientifica() { // Pasamos el binario obtenido a notación cientifica.
 
-  var posicionUno = numeroBinario.indexOf('1'); // Guardamos la posicion del primer "1" del binario.
+  if(numeroBinario.indexOf('1') !== -1){ // Guardamos la posicion del primer "1" del binario.
+    var posicionUno = numeroBinario.indexOf('1');
+  } else{
+    var posicionUno = 127; //En caso de que no haya ningún 1, el valor por defecto será 127, para que el exponente final sea 1
+  }
+     
   var posicionPunto = numeroBinario.indexOf('.'); // Guardamos la posicion del primer "." del binario.
   var exponenteFinal = 0
 
@@ -90,8 +101,6 @@ function pasarBinarioCientifica() { // Pasamos el binario obtenido a notación c
       exponenteFinal = exponenteFinal + 1
     }
   }
-
-
 
   return exponenteFinal; // Devolvemos el exponente.
 }
@@ -124,7 +133,13 @@ function ieee754aBinario(numeroDecimal) { // Por último teniendo todos los dato
   var comprobarSiCero = parseInt(numeroDecimal)
 
   if (comprobarSiCero === 0 || comprobarSiCero === 1) {
-    binarioExponente = '0' + (pasarBinarioEntera(127 - exponente)).toString()
+    binarioExponente = pasarBinarioEntera(127 - exponente).toString()
+
+    while(binarioExponente.length !== 8){
+      binarioExponente = '0' +  binarioExponente
+    }
+    
+
   } else {
     binarioExponente = (pasarBinarioEntera(127 + exponente)).toString()
   }
